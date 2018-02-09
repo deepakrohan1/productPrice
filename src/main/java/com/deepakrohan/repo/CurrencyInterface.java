@@ -7,7 +7,7 @@ public interface CurrencyInterface{
 	
 	ProductDetails findOne(ProductDataBO productDetail);
 	
-	void updateOne(String productId, Double productPrice);
+	boolean updateOne(String productId, Double productPrice);
 
 
 }

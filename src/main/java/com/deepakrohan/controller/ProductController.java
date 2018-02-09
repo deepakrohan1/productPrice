@@ -33,7 +33,7 @@ public class ProductController {
 
 
 	@RequestMapping("/product/{productId}")
-	public ResponseEntity<ProductDetails> getProduct(@PathVariable String productId) {
+	public ResponseEntity getProduct(@PathVariable String productId) {
 		ProductDetails productDetails = null;
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -42,22 +42,25 @@ public class ProductController {
 			productDetails = currencyInterface.findOne(productData);
 		}catch(NullPointerException ex) {
 			logger.error("No such object found");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}catch(HttpClientErrorException ex) {
 			logger.error("failed to get complete the response");
-			return new ResponseEntity<ProductDetails> (productDetails, HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.OK).body(new ProductDetails(null, null, null, null));
 		}
-		return new ResponseEntity<ProductDetails>(productDetails, headers, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(productDetails);
 	}
 
 	@PostMapping
 	@RequestMapping("/product/{productId}/{productPrice}")
 	public ProductDetails updateProduct(@PathVariable String productId, @PathVariable Double productPrice) {
+		
+		
 		ProductDetails productDetails = null;
-		//productDetails = getProduct(productId);
+		productDetails = (ProductDetails) getProduct(productId).getBody();
 		if(productDetails.getProdId() != null)
 		{
 			currencyInterface.updateOne(productId, productPrice);
-			//productDetails = getProduct(productId);
+			productDetails = (ProductDetails) getProduct(productId).getBody();
 		}
 		return productDetails;
 	}

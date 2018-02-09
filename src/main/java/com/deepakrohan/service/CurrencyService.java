@@ -15,6 +15,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 public class CurrencyService implements CurrencyInterface{
 	
 	
@@ -60,9 +61,10 @@ public class CurrencyService implements CurrencyInterface{
 	}
 
 	@Override
-	public void updateOne(String productId, Double productPrice) {
+	public boolean updateOne(String productId, Double productPrice) {
 		MongoCollection<Document> collection = getDbCollection();
-        collection.updateOne(eq("_id",productId), new Document("$set",
+        UpdateResult t = collection.updateOne(eq("_id",productId), new Document("$set",
         					new Document ("product_price", productPrice)));
+        return t.getModifiedCount() > 0;
 }
 }
