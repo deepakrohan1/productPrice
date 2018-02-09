@@ -66,14 +66,14 @@ public class ProductController {
 		System.out.println(productPrice);
 		if(productDetails.getProdId() != null)
 		{
-
 			Boolean updateSuccess = currencyInterface.updateOne(productId, productPrice);
-			productDetails = (ProductDetails) getProduct(productId).getBody();
-
-
+			if(updateSuccess) {
+				productDetails = (ProductDetails) getProduct(productId).getBody();
+			}else {
+				return ResponseEntity.status(HttpStatus.OK).body("error:update failed");
+			}
 		}else {
 			return ResponseEntity.status(HttpStatus.OK).body(new ProductDetails(null, null, null, null));
-
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(productDetails);
 	}
